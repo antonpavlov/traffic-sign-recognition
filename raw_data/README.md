@@ -17,18 +17,18 @@ This dataset contains pickle files:
 Some examples of images:
 
 
-![German Traffic Signs](https://github.com/antonpavlov/traffic-sign-recognition/support/readme_images/example.png)
+![German Traffic Signs](https://github.com/antonpavlov/traffic-sign-recognition/blob/master/support/readme_images/example.png)
 
 There are 43 different classes of the traffic signs distribuited with the following frequencies:
 
 
-![German Traffic Signs](https://github.com/antonpavlov/traffic-sign-recognition/support/readme_images/freqTrain.png)
+![German Traffic Signs](https://github.com/antonpavlov/traffic-sign-recognition/blob/master/support/readme_images/freqTrain.png)
 
 
-![German Traffic Signs](https://github.com/antonpavlov/traffic-sign-recognition/support/readme_images/freqValid.png)
+![German Traffic Signs](https://github.com/antonpavlov/traffic-sign-recognition/blob/master/support/readme_images/freqValid.png)
 
 
-![German Traffic Signs](https://github.com/antonpavlov/traffic-sign-recognition/support/readme_images/freqTest.png)
+![German Traffic Signs](https://github.com/antonpavlov/traffic-sign-recognition/blob/master/support/readme_images/freqTest.png)
 
 
 ### License  ###
