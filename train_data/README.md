@@ -6,7 +6,6 @@ Processed files may be downloaded from this link: [link](https://1drv.ms/f/s!AqU
 New files may be created by executing `datasetProcessor.ipynb` in a root folder of this repository.
 
 There are some examples of images from augmented dataset:
-![](https://github.com/antonpavlov/traffic-sign-recognition/blob/master/support/readme_images/bright.png)
 
 
 ![](https://github.com/antonpavlov/traffic-sign-recognition/blob/master/support/readme_images/bright1.png)
