@@ -11792,6 +11792,7 @@ div#notebook {
 <span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
 <span class="kn">from</span> <span class="nn">sklearn.utils</span> <span class="k">import</span> <span class="n">shuffle</span>
 <span class="kn">import</span> <span class="nn">os.path</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 </pre></div>
 
 </div>
@@ -11894,11 +11895,8 @@ div#notebook {
     <span class="c1"># Layer 3: Fully Connected. Input = 400. Output = 120.</span>
     <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">name_scope</span><span class="p">(</span><span class="s2">&quot;fc1&quot;</span><span class="p">):</span>
         <span class="n">fc1_W</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">120</span><span class="p">),</span> <span class="n">mean</span><span class="o">=</span><span class="n">mu</span><span class="p">,</span> <span class="n">stddev</span><span class="o">=</span><span class="n">sigma</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Weights&#39;</span><span class="p">))</span>
-        <span class="c1">#fc1_b = tf.Variable(tf.zeros(120), name=&#39;Bias&#39;)</span>
         <span class="n">fc1_b</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">constant</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">120</span><span class="p">]),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Bias&#39;</span><span class="p">)</span>
         <span class="n">fc1_1</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">fc0</span><span class="p">,</span> <span class="n">fc1_W</span><span class="p">)</span> <span class="o">+</span> <span class="n">fc1_b</span>
-        <span class="c1">#fc1 = tf.nn.relu(fc1_1)</span>
-        <span class="c1">#fc1 = tf.nn.sigmoid(fc1_1)</span>
         <span class="n">fc1</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">tanh</span><span class="p">(</span><span class="n">fc1_1</span><span class="p">)</span>
         <span class="n">tf</span><span class="o">.</span><span class="n">summary</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="s2">&quot;weights&quot;</span><span class="p">,</span> <span class="n">fc1_W</span><span class="p">)</span>
         <span class="n">tf</span><span class="o">.</span><span class="n">summary</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="s2">&quot;biases&quot;</span><span class="p">,</span> <span class="n">fc1_b</span><span class="p">)</span>
@@ -11960,7 +11958,7 @@ div#notebook {
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">name_scope</span><span class="p">(</span><span class="s1">&#39;Input&#39;</span><span class="p">):</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;InputData&#39;</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;InputData&#39;</span><span class="p">)</span>    
     <span class="n">y</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="p">(</span><span class="kc">None</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;LabelData&#39;</span><span class="p">)</span>
     <span class="n">keep_prob</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
     <span class="n">tf</span><span class="o">.</span><span class="n">summary</span><span class="o">.</span><span class="n">image</span><span class="p">(</span><span class="s1">&#39;input&#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
@@ -11995,8 +11993,7 @@ div#notebook {
 <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">name_scope</span><span class="p">(</span><span class="s2">&quot;xent&quot;</span><span class="p">):</span>
     <span class="n">cross_entropy</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">softmax_cross_entropy_with_logits</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="n">one_hot_y</span><span class="p">,</span> <span class="n">logits</span><span class="o">=</span><span class="n">logits</span><span class="p">)</span>
     <span class="n">loss_operation</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">(</span><span class="n">cross_entropy</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;xent&quot;</span><span class="p">)</span>
-    <span class="n">tf</span><span class="o">.</span><span class="n">summary</span><span class="o">.</span><span class="n">scalar</span><span class="p">(</span><span class="s2">&quot;xent&quot;</span><span class="p">,</span> <span class="n">loss_operation</span><span class="p">)</span>
-    <span class="c1">#tf.image_summary(&#39;softmax&#39;, loss_operation)</span>
+    <span class="n">tf</span><span class="o">.</span><span class="n">summary</span><span class="o">.</span><span class="n">scalar</span><span class="p">(</span><span class="s2">&quot;xent&quot;</span><span class="p">,</span> <span class="n">loss_operation</span><span class="p">)</span>    
 </pre></div>
 
 </div>
@@ -12043,12 +12040,14 @@ div#notebook {
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="n">X_data</span><span class="p">,</span> <span class="n">y_data</span><span class="p">):</span>
     <span class="n">num_examples</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">X_data</span><span class="p">)</span>
     <span class="n">total_accuracy</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">total_loss</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">sess</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">get_default_session</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">offset</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">num_examples</span><span class="p">,</span> <span class="n">BATCH_SIZE</span><span class="p">):</span>
         <span class="n">batch_x</span><span class="p">,</span> <span class="n">batch_y</span> <span class="o">=</span> <span class="n">X_data</span><span class="p">[</span><span class="n">offset</span><span class="p">:</span><span class="n">offset</span> <span class="o">+</span> <span class="n">BATCH_SIZE</span><span class="p">],</span> <span class="n">y_data</span><span class="p">[</span><span class="n">offset</span><span class="p">:</span><span class="n">offset</span> <span class="o">+</span> <span class="n">BATCH_SIZE</span><span class="p">]</span>
-        <span class="n">accuracy</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">accuracy_operation</span><span class="p">,</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">x</span><span class="p">:</span> <span class="n">batch_x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">batch_y</span><span class="p">,</span> <span class="n">keep_prob</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">})</span>
+        <span class="n">loss</span><span class="p">,</span> <span class="n">accuracy</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="n">loss_operation</span><span class="p">,</span> <span class="n">accuracy_operation</span><span class="p">],</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">x</span><span class="p">:</span> <span class="n">batch_x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">batch_y</span><span class="p">,</span> <span class="n">keep_prob</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">})</span>
         <span class="n">total_accuracy</span> <span class="o">+=</span> <span class="p">(</span><span class="n">accuracy</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">batch_x</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">total_accuracy</span> <span class="o">/</span> <span class="n">num_examples</span>
+        <span class="n">total_loss</span> <span class="o">+=</span> <span class="p">(</span><span class="n">loss</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">batch_x</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">total_loss</span><span class="o">/</span><span class="n">num_examples</span><span class="p">,</span> <span class="n">total_accuracy</span><span class="o">/</span><span class="n">num_examples</span>
 </pre></div>
 
 </div>
@@ -12093,17 +12092,19 @@ div#notebook {
             <span class="n">batch_x</span><span class="p">,</span> <span class="n">batch_y</span> <span class="o">=</span> <span class="n">X_train</span><span class="p">[</span><span class="n">offset</span><span class="p">:</span><span class="n">end</span><span class="p">],</span> <span class="n">y_train</span><span class="p">[</span><span class="n">offset</span><span class="p">:</span><span class="n">end</span><span class="p">]</span>
             <span class="n">summary</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">training_operation</span><span class="p">,</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">x</span><span class="p">:</span> <span class="n">batch_x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">batch_y</span><span class="p">,</span> <span class="n">keep_prob</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">})</span>
 
-        <span class="n">validation_accuracy</span> <span class="o">=</span> <span class="n">evaluate</span><span class="p">(</span><span class="n">X_valid</span><span class="p">,</span> <span class="n">y_valid</span><span class="p">)</span>
+        <span class="p">[</span><span class="n">validation_loss</span><span class="p">,</span> <span class="n">validation_accuracy</span><span class="p">]</span> <span class="o">=</span> <span class="n">evaluate</span><span class="p">(</span><span class="n">X_valid</span><span class="p">,</span> <span class="n">y_valid</span><span class="p">)</span>
         <span class="n">summary</span><span class="p">,</span> <span class="n">acc</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="n">merged_summary</span><span class="p">,</span> <span class="n">accuracy_operation</span><span class="p">],</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">x</span><span class="p">:</span> <span class="n">batch_x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">batch_y</span><span class="p">,</span> <span class="n">keep_prob</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">})</span>
         <span class="n">writer</span><span class="o">.</span><span class="n">add_summary</span><span class="p">(</span><span class="n">summary</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>  <span class="c1"># Write summary</span>
         <span class="n">saver</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">sess</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">LOGDIR</span><span class="p">,</span> <span class="s2">&quot;model.ckpt&quot;</span><span class="p">),</span> <span class="n">i</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;EPOCH </span><span class="si">{}</span><span class="s2"> ...&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Validation Accuracy = </span><span class="si">{:.3f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">validation_accuracy</span><span class="p">))</span>
+        <span class="c1">#print(&quot;Validation Loss = {:.3f}&quot;.format(validation_loss))</span>
         <span class="nb">print</span><span class="p">()</span>
     
     <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">name_scope</span><span class="p">(</span><span class="s2">&quot;accuracy&quot;</span><span class="p">):</span>
-        <span class="n">test_accuracy</span> <span class="o">=</span> <span class="n">evaluate</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Test Accuracy = </span><span class="si">{:.3f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">test_accuracy</span><span class="p">))</span>
+        <span class="p">[</span><span class="n">test_loss</span><span class="p">,</span> <span class="n">test_accuracy</span><span class="p">]</span> <span class="o">=</span> <span class="n">evaluate</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Test Accuracy = </span><span class="si">{:.3f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">test_accuracy</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Test Loss = </span><span class="si">{:.3f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">test_loss</span><span class="p">))</span>
     
     <span class="n">saver</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">Saver</span><span class="p">()</span>
     <span class="n">saver</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">sess</span><span class="p">,</span> <span class="s1">&#39;./model/train.data&#39;</span><span class="p">)</span>
@@ -12125,306 +12126,307 @@ div#notebook {
 <pre>Training...
 
 EPOCH 1 ...
-Validation Accuracy = 0.809
+Validation Accuracy = 0.791
 
 EPOCH 2 ...
-Validation Accuracy = 0.863
+Validation Accuracy = 0.872
 
 EPOCH 3 ...
-Validation Accuracy = 0.900
+Validation Accuracy = 0.895
 
 EPOCH 4 ...
-Validation Accuracy = 0.920
+Validation Accuracy = 0.913
 
 EPOCH 5 ...
-Validation Accuracy = 0.926
+Validation Accuracy = 0.919
 
 EPOCH 6 ...
-Validation Accuracy = 0.920
+Validation Accuracy = 0.925
 
 EPOCH 7 ...
-Validation Accuracy = 0.933
+Validation Accuracy = 0.938
 
 EPOCH 8 ...
-Validation Accuracy = 0.942
+Validation Accuracy = 0.940
 
 EPOCH 9 ...
-Validation Accuracy = 0.941
+Validation Accuracy = 0.930
 
 EPOCH 10 ...
-Validation Accuracy = 0.952
+Validation Accuracy = 0.936
 
 EPOCH 11 ...
-Validation Accuracy = 0.949
+Validation Accuracy = 0.941
 
 EPOCH 12 ...
-Validation Accuracy = 0.955
+Validation Accuracy = 0.938
 
 EPOCH 13 ...
-Validation Accuracy = 0.948
+Validation Accuracy = 0.944
 
 EPOCH 14 ...
-Validation Accuracy = 0.951
+Validation Accuracy = 0.939
 
 EPOCH 15 ...
-Validation Accuracy = 0.948
+Validation Accuracy = 0.937
 
 EPOCH 16 ...
-Validation Accuracy = 0.952
-
-EPOCH 17 ...
 Validation Accuracy = 0.948
 
+EPOCH 17 ...
+Validation Accuracy = 0.941
+
 EPOCH 18 ...
-Validation Accuracy = 0.955
+Validation Accuracy = 0.941
 
 EPOCH 19 ...
-Validation Accuracy = 0.952
+Validation Accuracy = 0.942
 
 EPOCH 20 ...
-Validation Accuracy = 0.956
+Validation Accuracy = 0.943
 
 EPOCH 21 ...
-Validation Accuracy = 0.951
+Validation Accuracy = 0.943
 
 EPOCH 22 ...
-Validation Accuracy = 0.954
+Validation Accuracy = 0.944
 
 EPOCH 23 ...
-Validation Accuracy = 0.953
+Validation Accuracy = 0.945
 
 EPOCH 24 ...
-Validation Accuracy = 0.954
+Validation Accuracy = 0.940
 
 EPOCH 25 ...
-Validation Accuracy = 0.950
+Validation Accuracy = 0.945
 
 EPOCH 26 ...
-Validation Accuracy = 0.957
+Validation Accuracy = 0.943
 
 EPOCH 27 ...
-Validation Accuracy = 0.958
+Validation Accuracy = 0.942
 
 EPOCH 28 ...
-Validation Accuracy = 0.955
+Validation Accuracy = 0.948
 
 EPOCH 29 ...
-Validation Accuracy = 0.954
+Validation Accuracy = 0.942
 
 EPOCH 30 ...
-Validation Accuracy = 0.958
+Validation Accuracy = 0.944
 
 EPOCH 31 ...
-Validation Accuracy = 0.957
+Validation Accuracy = 0.945
 
 EPOCH 32 ...
-Validation Accuracy = 0.958
+Validation Accuracy = 0.942
 
 EPOCH 33 ...
-Validation Accuracy = 0.954
+Validation Accuracy = 0.946
 
 EPOCH 34 ...
-Validation Accuracy = 0.960
+Validation Accuracy = 0.943
 
 EPOCH 35 ...
-Validation Accuracy = 0.957
+Validation Accuracy = 0.946
 
 EPOCH 36 ...
-Validation Accuracy = 0.958
+Validation Accuracy = 0.941
 
 EPOCH 37 ...
-Validation Accuracy = 0.952
+Validation Accuracy = 0.944
 
 EPOCH 38 ...
-Validation Accuracy = 0.959
+Validation Accuracy = 0.939
 
 EPOCH 39 ...
-Validation Accuracy = 0.958
+Validation Accuracy = 0.939
 
 EPOCH 40 ...
-Validation Accuracy = 0.956
+Validation Accuracy = 0.941
 
 EPOCH 41 ...
-Validation Accuracy = 0.957
+Validation Accuracy = 0.941
 
 EPOCH 42 ...
-Validation Accuracy = 0.955
+Validation Accuracy = 0.949
 
 EPOCH 43 ...
-Validation Accuracy = 0.957
+Validation Accuracy = 0.945
 
 EPOCH 44 ...
-Validation Accuracy = 0.958
+Validation Accuracy = 0.949
 
 EPOCH 45 ...
-Validation Accuracy = 0.961
+Validation Accuracy = 0.950
 
 EPOCH 46 ...
 Validation Accuracy = 0.956
 
 EPOCH 47 ...
-Validation Accuracy = 0.962
+Validation Accuracy = 0.951
 
 EPOCH 48 ...
-Validation Accuracy = 0.961
+Validation Accuracy = 0.952
 
 EPOCH 49 ...
-Validation Accuracy = 0.956
+Validation Accuracy = 0.946
 
 EPOCH 50 ...
-Validation Accuracy = 0.954
+Validation Accuracy = 0.957
 
 EPOCH 51 ...
-Validation Accuracy = 0.958
+Validation Accuracy = 0.949
 
 EPOCH 52 ...
-Validation Accuracy = 0.956
+Validation Accuracy = 0.948
 
 EPOCH 53 ...
-Validation Accuracy = 0.959
+Validation Accuracy = 0.952
 
 EPOCH 54 ...
-Validation Accuracy = 0.956
+Validation Accuracy = 0.951
 
 EPOCH 55 ...
-Validation Accuracy = 0.961
+Validation Accuracy = 0.958
 
 EPOCH 56 ...
-Validation Accuracy = 0.960
+Validation Accuracy = 0.953
 
 EPOCH 57 ...
-Validation Accuracy = 0.954
+Validation Accuracy = 0.956
 
 EPOCH 58 ...
-Validation Accuracy = 0.961
+Validation Accuracy = 0.955
 
 EPOCH 59 ...
-Validation Accuracy = 0.960
+Validation Accuracy = 0.947
 
 EPOCH 60 ...
 Validation Accuracy = 0.956
 
 EPOCH 61 ...
-Validation Accuracy = 0.960
+Validation Accuracy = 0.945
 
 EPOCH 62 ...
-Validation Accuracy = 0.959
+Validation Accuracy = 0.950
 
 EPOCH 63 ...
-Validation Accuracy = 0.961
+Validation Accuracy = 0.956
 
 EPOCH 64 ...
-Validation Accuracy = 0.960
+Validation Accuracy = 0.955
 
 EPOCH 65 ...
-Validation Accuracy = 0.962
+Validation Accuracy = 0.957
 
 EPOCH 66 ...
-Validation Accuracy = 0.960
+Validation Accuracy = 0.953
 
 EPOCH 67 ...
-Validation Accuracy = 0.961
+Validation Accuracy = 0.954
 
 EPOCH 68 ...
-Validation Accuracy = 0.960
+Validation Accuracy = 0.955
 
 EPOCH 69 ...
-Validation Accuracy = 0.966
+Validation Accuracy = 0.955
 
 EPOCH 70 ...
-Validation Accuracy = 0.962
+Validation Accuracy = 0.957
 
 EPOCH 71 ...
-Validation Accuracy = 0.962
+Validation Accuracy = 0.956
 
 EPOCH 72 ...
-Validation Accuracy = 0.961
+Validation Accuracy = 0.957
 
 EPOCH 73 ...
-Validation Accuracy = 0.961
+Validation Accuracy = 0.959
 
 EPOCH 74 ...
-Validation Accuracy = 0.961
+Validation Accuracy = 0.957
 
 EPOCH 75 ...
-Validation Accuracy = 0.961
+Validation Accuracy = 0.951
 
 EPOCH 76 ...
 Validation Accuracy = 0.960
 
 EPOCH 77 ...
-Validation Accuracy = 0.961
+Validation Accuracy = 0.960
 
 EPOCH 78 ...
-Validation Accuracy = 0.961
+Validation Accuracy = 0.955
 
 EPOCH 79 ...
-Validation Accuracy = 0.963
+Validation Accuracy = 0.951
 
 EPOCH 80 ...
-Validation Accuracy = 0.959
+Validation Accuracy = 0.951
 
 EPOCH 81 ...
-Validation Accuracy = 0.962
+Validation Accuracy = 0.951
 
 EPOCH 82 ...
-Validation Accuracy = 0.962
+Validation Accuracy = 0.956
 
 EPOCH 83 ...
-Validation Accuracy = 0.962
+Validation Accuracy = 0.955
 
 EPOCH 84 ...
-Validation Accuracy = 0.959
+Validation Accuracy = 0.948
 
 EPOCH 85 ...
-Validation Accuracy = 0.961
+Validation Accuracy = 0.956
 
 EPOCH 86 ...
-Validation Accuracy = 0.962
+Validation Accuracy = 0.949
 
 EPOCH 87 ...
-Validation Accuracy = 0.964
+Validation Accuracy = 0.956
 
 EPOCH 88 ...
-Validation Accuracy = 0.962
+Validation Accuracy = 0.953
 
 EPOCH 89 ...
-Validation Accuracy = 0.961
+Validation Accuracy = 0.949
 
 EPOCH 90 ...
-Validation Accuracy = 0.961
+Validation Accuracy = 0.954
 
 EPOCH 91 ...
-Validation Accuracy = 0.964
+Validation Accuracy = 0.954
 
 EPOCH 92 ...
-Validation Accuracy = 0.961
+Validation Accuracy = 0.957
 
 EPOCH 93 ...
-Validation Accuracy = 0.960
+Validation Accuracy = 0.954
 
 EPOCH 94 ...
-Validation Accuracy = 0.962
+Validation Accuracy = 0.956
 
 EPOCH 95 ...
-Validation Accuracy = 0.960
+Validation Accuracy = 0.956
 
 EPOCH 96 ...
-Validation Accuracy = 0.963
+Validation Accuracy = 0.958
 
 EPOCH 97 ...
-Validation Accuracy = 0.962
+Validation Accuracy = 0.955
 
 EPOCH 98 ...
-Validation Accuracy = 0.964
+Validation Accuracy = 0.958
 
 EPOCH 99 ...
-Validation Accuracy = 0.961
+Validation Accuracy = 0.952
 
 EPOCH 100 ...
-Validation Accuracy = 0.960
+Validation Accuracy = 0.958
 
-Test Accuracy = 0.942
+Test Accuracy = 0.936
+Test Loss = 0.247
 Model saved!
 </pre>
 </div>
@@ -12436,14 +12438,14 @@ Model saved!
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[31]:</div>
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Load dataset of 5 internet images</span>
 
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;./test_data/test_img_features1.pickle&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;./test_data/test_img_features.pickle&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="n">X_custom</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;./test_data/test_img_labels1.pickle&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;./test_data/test_img_labels.pickle&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="n">y_custom</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 </pre></div>
 
@@ -12454,15 +12456,30 @@ Model saved!
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[32]:</div>
+<div class="prompt input_prompt">In&nbsp;[16]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span> <span class="k">as</span> <span class="n">sess</span><span class="p">:</span>
     <span class="n">loader</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">import_meta_graph</span><span class="p">(</span><span class="s1">&#39;./model/train.data.meta&#39;</span><span class="p">)</span>
-    <span class="n">loader</span><span class="o">.</span><span class="n">restore</span><span class="p">(</span><span class="n">sess</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">latest_checkpoint</span><span class="p">(</span><span class="s1">&#39;./&#39;</span><span class="p">))</span>
+    <span class="n">loader</span><span class="o">.</span><span class="n">restore</span><span class="p">(</span><span class="n">sess</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">latest_checkpoint</span><span class="p">(</span><span class="s1">&#39;./model/&#39;</span><span class="p">))</span>
 
-    <span class="n">test_accuracy</span> <span class="o">=</span> <span class="n">evaluate</span><span class="p">(</span><span class="n">X_custom</span><span class="p">,</span> <span class="n">y_custom</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Test Accuracy = </span><span class="si">{:.3f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">test_accuracy</span><span class="p">))</span>    
+    <span class="p">[</span><span class="n">test_loss</span><span class="p">,</span> <span class="n">test_accuracy</span><span class="p">]</span> <span class="o">=</span> <span class="n">evaluate</span><span class="p">(</span><span class="n">X_custom</span><span class="p">,</span> <span class="n">y_custom</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Test Images Accuracy = </span><span class="si">{:.3f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">test_accuracy</span><span class="p">))</span>    
+    <span class="c1">#print(&quot;Test Images Loss = {:.3f}&quot;.format(test_loss))    </span>
+    <span class="nb">print</span><span class="p">()</span>
+    
+    <span class="n">softmax</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">logits</span><span class="p">),</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">x</span><span class="p">:</span> <span class="n">X_custom</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">y_custom</span><span class="p">,</span> <span class="n">keep_prob</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">})</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="n">softmax</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">5</span><span class="p">))</span>
+    
+    <span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">precision</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">suppress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Softmax probablities:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Predicted indices:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Labels of test images:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">y_custom</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12477,7 +12494,24 @@ Model saved!
 <div class="prompt"></div>
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Test Accuracy = 0.600
+<pre>Test Images Accuracy = 0.800
+
+Softmax probablities:
+[[ 0.99  0.01  0.    0.    0.  ]
+ [ 0.34  0.3   0.16  0.11  0.04]
+ [ 0.96  0.01  0.01  0.01  0.  ]
+ [ 1.    0.    0.    0.    0.  ]
+ [ 0.98  0.01  0.    0.    0.  ]]
+
+Predicted indices:
+[[13  2 38 12 35]
+ [23 11 30 19 10]
+ [28 27 11 36 30]
+ [35 36  3 13 33]
+ [17 38 12 14 40]]
+
+Labels of test images:
+[13, 23, 28, 35, 38]
 </pre>
 </div>
 </div>
@@ -12485,6 +12519,16 @@ Model saved!
 </div>
 </div>
 
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>An observation:</strong> I just realized, that the sign <em>Turn right</em> is not on the list of classes. So, the network classified it as a <em>No entry</em>, which is very close, despite of different colour. An RGB neural network would not do this kind of prediction, but this grayscale one does.</p>
+
+</div>
+</div>
 </div>
     </div>
   </div>
